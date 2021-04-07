@@ -1,0 +1,40 @@
+.docked {
+	display: flex;
+	flex-direction: row;
+
+	.main {
+		flex-grow: 1;
+		display: flex;
+
+		> * {
+			flex-grow: 1;
+		}
+	}
+}
+
+.parent {
+	overflow: hidden;
+
+	.leftPanel, .rightPanel, .main {
+		position: relative;
+
+		> div {
+			position: absolute;
+			display: flex;
+		}
+	}
+
+	.rightPanel .flex {
+		flex-direction: row-reverse;
+	}
+
+	.flex {
+		> div {
+			display: flex;
+		}
+	}
+
+	.main > div > * {
+		flex-grow: 1;
+	}
+}

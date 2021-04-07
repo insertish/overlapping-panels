@@ -1,7 +1,7 @@
-import { ExampleComponent } from '.'
+import { OverlappingPanels } from '.'
 
-describe('ExampleComponent', () => {
+describe('OverlappingPanels', () => {
   it('is truthy', () => {
-    expect(ExampleComponent).toBeTruthy()
+    expect(OverlappingPanels).toBeTruthy()
   })
 })

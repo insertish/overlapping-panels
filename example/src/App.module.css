@@ -1,0 +1,63 @@
+main {
+    gap: 16px;
+    color: white;
+    display: flex;
+    background: #111;
+    flex-direction: column;
+}
+
+main > h1 {
+    margin: 0;
+    padding: 1em 1em 0 1em;
+    font-size: 2em;
+    text-align: center;
+}
+
+main > p {
+    padding: 0 1em;
+}
+
+main > div {
+    padding: 0 1em;
+}
+
+.autosize {
+    padding: 0;
+}
+
+.autosize.desc {
+    padding: 0 1em;
+}
+
+.desc {
+    color: gray;
+    font-size: 0.8em;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+}
+
+.panel {
+    color: black;
+    width: fit-content;
+    background: white;
+    border: 1px solid black;
+}
+
+.mainPanel {
+    background: #ccc;
+    overflow-y: scroll;
+}
+
+.mainPanel h1 {
+    height: 2000px;
+}
+
+.leftPanel {
+    width: 300px;
+    background: #aaa;
+}
+
+.rightPanel {
+    width: 150px;
+    background: #aaa;
+}

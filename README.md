@@ -1,13 +1,13 @@
-# overlapping-panels
+# Overlapping Panels
 
 > Gestures-driven navigation UI for React.js
 
-[![NPM](https://img.shields.io/npm/v/overlapping-panels.svg)](https://www.npmjs.com/package/overlapping-panels) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/react-overlapping-panels.svg)](https://www.npmjs.com/package/react-overlapping-panels)
 
 ## Install
 
 ```bash
-npm install --save overlapping-panels
+npm install --save react-overlapping-panels
 ```
 
 ## Usage
@@ -15,16 +15,8 @@ npm install --save overlapping-panels
 ```tsx
 import React, { Component } from 'react'
 
-import MyComponent from 'overlapping-panels'
-import 'overlapping-panels/dist/index.css'
+import MyComponent from 'react-overlapping-panels'
+import 'react-overlapping-panels/dist/index.css'
 
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
-}
+// see example/src for now
 ```
-
-## License
-
-MIT © [insertish](https://github.com/insertish)
