@@ -41,9 +41,14 @@
 
 .nav {
 	z-index: 1;
+	pointer-events: none;
 }
 
 .nav > div {
 	display: flex;
 	flex-direction: column-reverse;
+}
+
+.nav > div > div {
+	pointer-events: all;
 }
