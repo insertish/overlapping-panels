@@ -16,7 +16,7 @@ const App = () => {
   }
 
   const leftPanel = {
-    component: LeftPanel,
+    component: <LeftPanel />,
     width: 300
   };
 
@@ -29,7 +29,7 @@ const App = () => {
   }
 
   const rightPanel = {
-    component: RightPanel,
+    component: <RightPanel />,
     width: 150,
   };
 
@@ -38,6 +38,20 @@ const App = () => {
       <h1>hi</h1>
     </div>
   )
+
+  function BottomNav() {
+    return (
+      <div className={styles.bottomNav}>
+        bottom navigation<br/>hello!
+      </div>
+    )
+  }
+
+  const bottomNav = {
+    component: <BottomNav />,
+    height: 40,
+    showIf: Docked.Left
+  }
 
   const { width, height } = useWindowSize();
 
@@ -51,10 +65,26 @@ const App = () => {
           <OverlappingPanels
             open={open}
             width={720}
-            height={1280}
+            height={640}
             leftPanel={leftPanel}
             rightPanel={rightPanel}
             setOpen={panel => setOpen(panel)}>
+            { content }
+          </OverlappingPanels>
+        </div>
+      </div>
+      <div>
+        <div className={styles.desc}>720 x 1280 (with bottom navigation and minOffset = 10)</div>
+        <div className={styles.panel}>
+          <OverlappingPanels
+            open={open}
+            width={720}
+            height={640}
+            minOffset={10}
+            leftPanel={leftPanel}
+            rightPanel={rightPanel}
+            setOpen={panel => setOpen(panel)}
+            bottomNav={bottomNav}>
             { content }
           </OverlappingPanels>
         </div>

@@ -61,3 +61,8 @@ main > div {
     width: 150px;
     background: #aaa;
 }
+
+.bottomNav {
+    height: 40px;
+    background: #444;
+}

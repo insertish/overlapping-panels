@@ -16,7 +16,13 @@ export enum Docked {
 
 interface SidePanel {
 	width: number,
-	component: () => React.ReactChild
+	component: React.ReactNode
+}
+
+interface BottomNavigation {
+	height: number,
+	showIf?: Docked,
+	component: React.ReactNode,
 }
 
 interface Props {
@@ -24,9 +30,11 @@ interface Props {
 	width: number,
 	height: number,
 	docked?: Docked,
+	minOffset?: number,
 	leftPanel?: SidePanel,
 	rightPanel?: SidePanel,
-	children?: React.ReactChild,
+	children?: React.ReactNode,
+	bottomNav?: BottomNavigation,
 	setOpen: (panel: Panel) => void,
 }
 
@@ -34,16 +42,16 @@ type TouchState =
 	| { type: 'none' }
 	| { type: 'active', startX: number, offsetX: number };
 
-export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPanel, children, rightPanel }: Props) => {
+export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPanel, children, rightPanel, bottomNav, minOffset }: Props) => {
 	if (docked) {
 		return <div
 			className={styles.docked}
 			style={{ width, height }}>
-			{ (docked & 1) && leftPanel && leftPanel.component() }
+			{ (docked & 1) && leftPanel && leftPanel.component }
 			<div className={styles.main}>
 				{ children }
 			</div>
-			{ (docked & 2) && rightPanel && rightPanel.component() }
+			{ (docked & 2) && rightPanel && rightPanel.component }
 		</div>
 	}
 
@@ -51,7 +59,7 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 
 	const lWidth = leftPanel?.width || 0;
 	const rWidth = rightPanel?.width || 0;
-	const offset = (
+	var offset = (
 		touchState.type === 'active' ?
 		Math.min(lWidth, Math.max(- rWidth, (
 			open === Panel.Left ?
@@ -66,36 +74,14 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 				undefined
 		)
 	) || 0;
+
+	if (minOffset) {
+		if (offset < minOffset) offset = 0;
+	}
 	
 	const visible = offset < 0 ? Panel.Right :
 					offset > 0 ? Panel.Left :
 					Panel.None;
-
-	/* React.useEffect(() => {
-		if (touchState.type === 'none') return;
-		if (rightPanel && offset < - rWidth / 2) {
-			if (open !== Panel.Right) {
-				setOpen(Panel.Right);
-				setTouchState({
-					...touchState,
-					startX: touchState.startX - rWidth
-				});
-			}
-		} else if (leftPanel && offset > lWidth / 2) {
-			if (open !== Panel.Left) setOpen(Panel.Left);
-			setTouchState({
-				...touchState,
-				startX: touchState.startX + lWidth
-			});
-		} else if (open !== Panel.None) {
-			setOpen(Panel.None);
-			setTouchState({
-				...touchState,
-				startX: touchState.startX +
-					open === Panel.Right ? rWidth : - lWidth
-			});
-		}
-	}, [ offset, touchState ]); */
 
 	return <div
 		className={styles.parent}
@@ -132,7 +118,7 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 				className={styles.leftPanel}>
 				<div style={{ width: leftPanel?.width, height }}>
 					<div className={styles.flex}>
-						{ leftPanel?.component() }
+						{ leftPanel?.component }
 					</div>
 				</div>
 			</div>
@@ -142,7 +128,7 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 				className={styles.rightPanel}>
 				<div className={styles.flex} style={{ width, height }}>
 					<div style={{ width: rightPanel?.width, height }}>
-						{ rightPanel?.component() }
+						{ rightPanel?.component }
 					</div>
 				</div>
 			</div>
@@ -151,6 +137,25 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 			<div className={styles.main}>
 				<div style={{ width, height, left: offset }}>
 					{ children }
+				</div>
+			</div>
+		}
+		{
+			bottomNav &&
+			<div className={styles.nav}>
+				<div style={{
+					width, height,
+					top: (
+						bottomNav.height +
+						(
+							(((bottomNav.showIf || 0) & 2) && offset < 0) ? (offset / rWidth) * bottomNav.height :
+							(((bottomNav.showIf || 0) & 1) && offset > 0) ? (-offset / lWidth) * bottomNav.height : 0
+						)
+					)
+				}}>
+					<div>
+						{ bottomNav.component }
+					</div>
 				</div>
 			</div>
 		}

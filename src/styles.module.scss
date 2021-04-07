@@ -15,7 +15,7 @@
 .parent {
 	overflow: hidden;
 
-	.leftPanel, .rightPanel, .main {
+	.leftPanel, .rightPanel, .main, .nav {
 		position: relative;
 
 		> div {
@@ -37,4 +37,9 @@
 	.main > div > * {
 		flex-grow: 1;
 	}
+}
+
+.nav > div {
+	display: flex;
+	flex-direction: column-reverse;
 }
