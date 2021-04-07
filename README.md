@@ -24,7 +24,7 @@ import 'react-overlapping-panels/dist/index.css'
 ## To-Do
 
 - Could improve UX by transitioning to new state from when touch finishes.
-- Allow a way to specify minimum offset in order to start moving panels.
+- Add RTL support.
 
 ## Preview
 
