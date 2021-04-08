@@ -47,11 +47,11 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 		return <div
 			className={styles.docked}
 			style={{ width, height }}>
-			{ (docked & 1) && leftPanel && leftPanel.component }
+			{ ((docked & 1) && leftPanel) ? leftPanel.component : undefined }
 			<div className={styles.main}>
 				{ children }
 			</div>
-			{ (docked & 2) && rightPanel && rightPanel.component }
+			{ ((docked & 2) && rightPanel) ? rightPanel.component : undefined }
 		</div>
 	}
 
