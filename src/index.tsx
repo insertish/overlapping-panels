@@ -155,7 +155,7 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 					top: (
 						bottomNav.height +
 						(
-							((bottomNav.showIf || 0) & 4) ? bottomNav.height :
+							((bottomNav.showIf || 0) & 4) ? (-bottomNav.height) :
 							(((bottomNav.showIf || 2) & 2) && offset < 0) ? (offset / rWidth) * bottomNav.height :
 							(((bottomNav.showIf || 1) & 1) && offset > 0) ? (-offset / lWidth) * bottomNav.height : 0
 						)
