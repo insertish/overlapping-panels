@@ -14,6 +14,13 @@ export enum Docked {
 	Both  = 3,
 }
 
+export enum ShowIf {
+	Left   = 1,
+	Right  = 2,
+	Both   = 3,
+	Always = 4
+}
+
 interface SidePanel {
 	width: number,
 	component: React.ReactNode
@@ -21,7 +28,7 @@ interface SidePanel {
 
 interface BottomNavigation {
 	height: number,
-	showIf?: Docked,
+	showIf?: ShowIf,
 	component: React.ReactNode,
 }
 
@@ -148,6 +155,7 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 					top: (
 						bottomNav.height +
 						(
+							((bottomNav.showIf || 0) & 4) ? bottomNav.height :
 							(((bottomNav.showIf || 2) & 2) && offset < 0) ? (offset / rWidth) * bottomNav.height :
 							(((bottomNav.showIf || 1) & 1) && offset > 0) ? (-offset / lWidth) * bottomNav.height : 0
 						)
