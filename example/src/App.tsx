@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styles from './App.module.css';
 
-import { OverlappingPanels, Docked, Panel } from 'overlapping-panels'
+import { OverlappingPanels, Docked, Panel, ShowIf } from 'overlapping-panels'
 import 'overlapping-panels/dist/index.css'
 
 const App = () => {
@@ -50,7 +50,7 @@ const App = () => {
   const bottomNav = {
     component: <BottomNav />,
     height: 40,
-    showIf: Docked.Left
+    showIf: ShowIf.Left
   }
 
   const { width, height } = useWindowSize();
