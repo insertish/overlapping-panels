@@ -47,7 +47,7 @@ interface Props {
 
 type TouchState =
 	| { type: 'none' }
-	| { type: 'active', startX: number, offsetX: number };
+	| { type: 'active', startX: number, show: Panel, target: Panel };
 
 export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPanel, children, rightPanel, bottomNav, minOffset }: Props) => {
 	if (docked) {
@@ -62,33 +62,92 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 		</div>
 	}
 
-	const [ touchState, setTouchState ] = React.useState<TouchState>({ type: 'none' });
-
 	const lWidth = leftPanel?.width || 0;
 	const rWidth = rightPanel?.width || 0;
-	var offset = (
-		touchState.type === 'active' ?
-		Math.min(lWidth, Math.max(- rWidth, (
-			open === Panel.Left ?
-				(lWidth) - touchState.offsetX :
-			open === Panel.Right ?
-				- (rWidth) - touchState.offsetX :
-				(- touchState.offsetX)
-		))) :
-		(
-			open === Panel.Left ? lWidth :
-			open === Panel.Right ? - rWidth :
-				undefined
-		)
-	) || 0;
 
-	if (minOffset) {
-		if (offset < minOffset) offset = 0;
-	}
+	const [ touchState, setTouchState ] = React.useState<TouchState>({ type: 'none' });
+	const mainRef = React.useRef<HTMLDivElement>(null);
+	const navbRef = React.useRef<HTMLDivElement>(null);
 	
-	const visible = offset < 0 ? Panel.Right :
-					offset > 0 ? Panel.Left :
-					Panel.None;
+	const visible = touchState.type === 'active' ? touchState.show : open;
+
+	function recalculateNavbarTop(offset: number) {
+		if (!bottomNav) return;
+		if (navbRef.current === null) return;
+
+		let val = bottomNav.height +
+			(
+				((bottomNav.showIf || 0) & 4) ? (-bottomNav.height) :
+				(((bottomNav.showIf || 2) & 2) && offset < 0) ? (offset / rWidth) * bottomNav.height :
+				(((bottomNav.showIf || 1) & 1) && offset > 0) ? (-offset / lWidth) * bottomNav.height : 0
+			);
+		
+		navbRef.current.style.top = val + 'px';
+	}
+
+	function recalculateState(offsetX: number) {
+		if (touchState.type === 'none') return;
+
+		let el = mainRef.current;
+		if (el) {
+			let offset = Math.min(lWidth, Math.max(-rWidth, offsetX));
+			let mutations: { show?: Panel, target?: Panel } = {};
+
+			// Determine what is visible.
+			if (offset > 0) {
+				if (touchState.show !== Panel.Left) {
+					mutations.show = Panel.Left;
+				}
+			} else if (offset < 0) {
+				if (touchState.show !== Panel.Right) {
+					mutations.show = Panel.Right;
+				}
+			} else {
+				if (touchState.show !== Panel.None) {
+					mutations.show = Panel.None;
+				}
+			}
+
+			// Determine drop target.
+			if (offset > lWidth / 2) {
+				if (touchState.target !== Panel.Left) {
+					mutations.target = Panel.Left;
+				}
+			} else if (offset < - rWidth / 2) {
+				if (touchState.target !== Panel.Right) {
+					mutations.target = Panel.Right;
+				}
+			} else {
+				if (touchState.target !== Panel.None) {
+					mutations.target = Panel.None;
+				}
+			}
+
+			if (Object.keys(mutations).length > 0) {
+				setTouchState({ ...touchState, ...mutations });
+			}
+
+			el.style.left = offset + 'px';
+			recalculateNavbarTop(offset);
+		}
+	}
+
+	function recalculateDropped(newState?: Panel) {
+		let el = mainRef.current;
+		if (el) {
+			let current = typeof newState !== 'undefined' ? newState : open;
+
+			let val = 0;
+			if (current === Panel.Left) {
+				val = lWidth;
+			} else if (current === Panel.Right) {
+				val = - rWidth;
+			}
+
+			el.style.left = val + 'px';
+			recalculateNavbarTop(val);
+		}
+	}
 
 	return <div
 		className={styles.parent}
@@ -97,28 +156,38 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 			setTouchState({
 				type: 'active',
 				startX: ev.touches[0].clientX,
-				offsetX: 0
+				show: open,
+				target: open
 			})
 		}
-		onTouchMove={ev =>
-			touchState.type === 'active' &&
-			setTouchState({
-				...touchState,
-				offsetX: touchState.startX - ev.touches[0].clientX
-			})
-		}
-		onTouchEnd={() => {
-			if (offset < - rWidth / 2) {
-				setOpen(Panel.Right);
-			} else if (offset > lWidth / 2) {
-				setOpen(Panel.Left);
-			} else {
-				setOpen(Panel.None);
-			}
+		onTouchMove={ev => {
+			if (touchState.type === 'active') {
+				let offsetX = ev.touches[0].clientX - touchState.startX;
 
-			setTouchState({
-				type: 'none'
-			});
+				if (minOffset ? Math.abs(offsetX) > minOffset : true) {
+					recalculateState(
+						offsetX +
+						(open === Panel.None ? 0 :
+						 open === Panel.Left ? lWidth : -rWidth)
+					)
+				} else {
+					if (mainRef.current) {
+						recalculateDropped();
+					}
+				}
+			}
+		}}
+		onTouchEnd={() => {
+			if (touchState.type === 'active') {
+				setOpen(touchState.target);
+				setTouchState({
+					type: 'none'
+				});
+
+				if (mainRef.current) {
+					recalculateDropped(touchState.target);
+				}
+			}
 		}}>
 		{
 			visible === Panel.Left && <div
@@ -142,7 +211,7 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 		}
 		{
 			<div className={styles.main}>
-				<div style={{ width, height, left: offset }}>
+				<div ref={mainRef} style={{ width, height }}>
 					{ children }
 				</div>
 			</div>
@@ -150,17 +219,7 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 		{
 			bottomNav &&
 			<div className={styles.nav}>
-				<div style={{
-					width, height,
-					top: (
-						bottomNav.height +
-						(
-							((bottomNav.showIf || 0) & 4) ? (-bottomNav.height) :
-							(((bottomNav.showIf || 2) & 2) && offset < 0) ? (offset / rWidth) * bottomNav.height :
-							(((bottomNav.showIf || 1) & 1) && offset > 0) ? (-offset / lWidth) * bottomNav.height : 0
-						)
-					)
-				}}>
+				<div style={{ width, height, top: bottomNav.height }} ref={navbRef}>
 					<div>
 						{ bottomNav.component }
 					</div>
