@@ -149,6 +149,8 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 		}
 	}
 
+	React.useLayoutEffect(() => recalculateDropped(open), [ open ]);
+
 	return <div
 		className={styles.parent}
 		style={{ width, height }}
@@ -179,13 +181,16 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 		}}
 		onTouchEnd={() => {
 			if (touchState.type === 'active') {
-				setOpen(touchState.target);
 				setTouchState({
 					type: 'none'
 				});
 
-				if (mainRef.current) {
-					recalculateDropped(touchState.target);
+				if (open === touchState.target) {
+					if (mainRef.current) {
+						recalculateDropped(touchState.target);
+					}
+				} else {
+					setOpen(touchState.target);
 				}
 			}
 		}}>
@@ -219,7 +224,7 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 		{
 			bottomNav &&
 			<div className={styles.nav}>
-				<div style={{ width, height, top: bottomNav.height }} ref={navbRef}>
+				<div style={{ width, height }} ref={navbRef}>
 					<div>
 						{ bottomNav.component }
 					</div>
