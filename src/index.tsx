@@ -45,11 +45,11 @@ interface Props {
 	setOpen: (panel: Panel) => void,
 }
 
-type TouchState =
+/* type TouchState =
 	| { type: 'none' }
-	| { type: 'active', startX: number, show: Panel, target: Panel };
+	| { type: 'active', startX: number, show: Panel, target: Panel }; */
 
-export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPanel, children, rightPanel, bottomNav, minOffset }: Props) => {
+export const OverlappingPanels = ({ width, height, docked, /* open, setOpen, */ leftPanel, children, rightPanel, /* bottomNav, minOffset */ }: Props) => {
 	if (docked) {
 		return <div
 			className={styles.docked}
@@ -62,11 +62,21 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 		</div>
 	}
 
-	const lWidth = leftPanel?.width || 0;
-	const rWidth = rightPanel?.width || 0;
+	const gridTemplateColumns = (leftPanel ? leftPanel.width + 'px' : '')
+		   + ` ${width}px ` + (rightPanel ? rightPanel.width + 'px' : '');
+
+	return (
+		<div style={{ width, height, gridTemplateColumns }} className={styles.snap}>
+			{ leftPanel && leftPanel.component }
+			{ children }
+			{ rightPanel && rightPanel.component }
+		</div>
+	)
+
+	/*
 
 	const [ touchState, setTouchState ] = React.useState<TouchState>({ type: 'none' });
-	const mainRef = React.useRef<HTMLDivElement>(null);
+	const mainRef = React.useRef<HTMLDivElement>(null)s
 	const navbRef = React.useRef<HTMLDivElement>(null);
 	
 	const visible = touchState.type === 'active' ? touchState.show : open;
@@ -231,5 +241,5 @@ export const OverlappingPanels = ({ width, height, docked, open, setOpen, leftPa
 				</div>
 			</div>
 		}
-	</div>
+	</div>*/
 }

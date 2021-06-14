@@ -53,3 +53,20 @@
 .nav > div > div {
 	pointer-events: all;
 }
+
+.snap {
+	scrollbar-width: none;
+	scrollbar-color: transparent;
+
+	display: grid;
+	overflow-x: scroll;
+	scroll-snap-type: x mandatory;
+}
+
+.snap > div {
+	scroll-snap-align: center;
+}
+
+.snap > div:nth-child(2) {
+	scroll-snap-stop: always;
+}
