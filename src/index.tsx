@@ -92,7 +92,7 @@ export const OverlappingPanels = ({ width, height, docked, leftPanel, children, 
 
 		el.addEventListener('scroll', recalculate);
 		return () => el.removeEventListener('scroll', recalculate);
-	}, [ scrollRef ]);
+	}, [ scrollRef, leftPanel, rightPanel, bottomNav ]);
 
 	const gridTemplateColumns = (leftPanel ? leftPanel.width + 'px' : '')
 		   + ` ${width}px ` + (rightPanel ? rightPanel.width + 'px' : '');
@@ -100,9 +100,13 @@ export const OverlappingPanels = ({ width, height, docked, leftPanel, children, 
 	return (
 		<div className={styles.container}>
 			<div style={{ width, height, gridTemplateColumns }} className={styles.snap} ref={scrollRef}>
-				{ leftPanel && leftPanel.component }
+				{ leftPanel && <div style={{ height }}>
+					{ leftPanel.component }
+				</div> }
 				{ children }
-				{ rightPanel && rightPanel.component }
+				{ rightPanel && <div style={{ height }}>
+					{ rightPanel.component }
+				</div> }
 			</div>
 			{
 				bottomNav &&

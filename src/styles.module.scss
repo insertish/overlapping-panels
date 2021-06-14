@@ -20,6 +20,8 @@
 .snap {
 	display: grid;
 	overflow-x: scroll;
+	overflow-y: hidden;
+	grid-template-rows: 1;
 	scroll-snap-type: x mandatory;
 
 	scrollbar-width: none;
