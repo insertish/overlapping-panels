@@ -13,54 +13,22 @@
 	}
 }
 
-.parent {
+.container {
 	overflow: hidden;
-
-	.leftPanel, .rightPanel, .main, .nav {
-		position: relative;
-
-		> div {
-			position: absolute;
-			display: flex;
-		}
-	}
-
-	.rightPanel .flex {
-		flex-direction: row-reverse;
-	}
-
-	.flex {
-		> div {
-			display: flex;
-		}
-	}
-
-	.main > div > * {
-		flex-grow: 1;
-	}
-}
-
-.nav {
-	z-index: 1;
-	pointer-events: none;
-}
-
-.nav > div {
-	display: flex;
-	flex-direction: column-reverse;
-}
-
-.nav > div > div {
-	pointer-events: all;
 }
 
 .snap {
-	scrollbar-width: none;
-	scrollbar-color: transparent;
-
 	display: grid;
 	overflow-x: scroll;
 	scroll-snap-type: x mandatory;
+
+	scrollbar-width: none;
+	scrollbar-color: transparent;
+
+	&::-webkit-scrollbar {
+		width: 0px;
+		height: 0px;
+	}
 }
 
 .snap > div {
@@ -69,4 +37,20 @@
 
 .snap > div:nth-child(2) {
 	scroll-snap-stop: always;
+}
+
+.nav {
+	z-index: 1;
+	position: relative;
+	pointer-events: none;
+}
+
+.nav > div {
+	display: flex;
+	position: absolute;
+	flex-direction: column-reverse;
+}
+
+.nav > div > div {
+	pointer-events: all;
 }

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import styles from './App.module.css';
 
-import { OverlappingPanels, Docked, Panel, ShowIf } from 'overlapping-panels'
+import { OverlappingPanels, Docked, ShowIf } from 'overlapping-panels'
 import 'overlapping-panels/dist/index.css'
 
 const App = () => {
-  const [ open, setOpen ] = useState(Panel.None);
-
   function LeftPanel() {
     return (
       <div className={styles.leftPanel}>
@@ -35,6 +33,10 @@ const App = () => {
 
   const content = (
     <div className={styles.mainPanel}>
+      <div style={{ width: '200px', overflowX: 'scroll', background: '#000a', margin: '40px' }}>
+        scroll me sideways<br/>
+        {'A'.repeat(1000)}
+      </div>
       <h1>hi</h1>
     </div>
   )
@@ -50,7 +52,7 @@ const App = () => {
   const bottomNav = {
     component: <BottomNav />,
     height: 40,
-    showIf: ShowIf.Left
+    showIf: ShowIf.Both
   }
 
   const { width, height } = useWindowSize();
@@ -63,27 +65,22 @@ const App = () => {
         <div className={styles.desc}>720 x 1280</div>
         <div className={styles.panel}>
           <OverlappingPanels
-            open={open}
             width={720}
             height={640}
             leftPanel={leftPanel}
-            rightPanel={rightPanel}
-            setOpen={panel => setOpen(panel)}>
+            rightPanel={rightPanel}>
             { content }
           </OverlappingPanels>
         </div>
       </div>
       <div>
-        <div className={styles.desc}>720 x 1280 (with bottom navigation and minOffset = 10)</div>
+        <div className={styles.desc}>720 x 1280 (with bottom navigation)</div>
         <div className={styles.panel}>
           <OverlappingPanels
-            open={open}
             width={720}
             height={640}
-            minOffset={10}
             leftPanel={leftPanel}
             rightPanel={rightPanel}
-            setOpen={panel => setOpen(panel)}
             bottomNav={bottomNav}>
             { content }
           </OverlappingPanels>
@@ -95,8 +92,6 @@ const App = () => {
           <OverlappingPanels
             width={1280}
             height={720}
-            open={Panel.None}
-            setOpen={() => {}}
             docked={Docked.Both}
             leftPanel={leftPanel}
             rightPanel={rightPanel}>
@@ -109,12 +104,10 @@ const App = () => {
         <div className={styles.panel}>
           { width && height &&
           <OverlappingPanels
-            open={open}
             width={width}
             height={height}
             leftPanel={leftPanel}
-            rightPanel={rightPanel}
-            setOpen={panel => setOpen(panel)}>
+            rightPanel={rightPanel}>
             { content }
           </OverlappingPanels> }
         </div>
