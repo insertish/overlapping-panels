@@ -56,42 +56,44 @@ export const OverlappingPanels = ({ width, height, docked, leftPanel, children, 
 		if (!bottomNav) return;
 		if (!scrollRef.current) return;
 		let el = scrollRef.current;
-
+		
 		function recalculate() {
 			let bEl = bottomNavRef.current;
 			if (!bEl) return;
-
+	
 			let showIf = (typeof bottomNav!.showIf === 'undefined' ? ShowIf.Both : bottomNav!.showIf);
 			if (showIf & ShowIf.Always) {
 				bEl.style.top = '';
 				return;
 			}
-
+	
 			const lWidth = leftPanel?.width  || 0;
 			const rWidth = rightPanel?.width || 0;
 			const hidden = bottomNav!.height + 'px';
-
+	
 			if (el.scrollLeft < lWidth) {
 				if (showIf & ShowIf.Left) {
 					bEl.style.top = (el.scrollLeft / lWidth * bottomNav!.height) + 'px';
-				} else if (bEl.style.top !== hidden) {
-					bEl.style.top = hidden;
+					return;
+				} else if (bEl.style.top === hidden) {
+					return;
 				}
 			}
-
+	
 			if (el.scrollLeft > lWidth) {
 				if (showIf & ShowIf.Right) {
 					bEl.style.top = ((el.scrollLeft - lWidth) / rWidth * - bottomNav!.height + bottomNav!.height) + 'px';
-				} else if (bEl.style.top !== hidden) {
-					bEl.style.top = hidden;
+					return;
+				} else if (bEl.style.top === hidden) {
+					return;
 				}
 			}
+	
+			bEl.style.top = hidden;
 		}
-		
-		recalculate();
 
 		el.addEventListener('scroll', recalculate);
-		return () => el.removeEventListener('scroll', recalculate);
+		return () => el!.removeEventListener('scroll', recalculate);
 	}, [ scrollRef, leftPanel, rightPanel, bottomNav ]);
 
 	const gridTemplateColumns = (leftPanel ? leftPanel.width + 'px' : '')
