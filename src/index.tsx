@@ -113,7 +113,7 @@ export const OverlappingPanels = ({ width, height, docked, leftPanel, children, 
 			{
 				bottomNav &&
 				<div className={styles.nav} style={{ bottom: height }}>
-					<div style={{ width, height, top: bottomNav.height }} ref={bottomNavRef}>
+					<div style={{ width, height }} ref={bottomNavRef}>
 						<div>
 							{ bottomNav.component }
 						</div>
