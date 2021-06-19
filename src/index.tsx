@@ -27,8 +27,8 @@ interface BottomNavigation {
 }
 
 interface Props {
-	width: number,
-	height: number,
+	width: string,
+	height: string,
 	docked?: Docked,
 	leftPanel?: SidePanel,
 	rightPanel?: SidePanel,
@@ -97,7 +97,7 @@ export const OverlappingPanels = ({ width, height, docked, leftPanel, children, 
 	}, [ scrollRef, leftPanel, rightPanel, bottomNav ]);
 
 	const gridTemplateColumns = (leftPanel ? leftPanel.width + 'px' : '')
-		   + ` ${width}px ` + (rightPanel ? rightPanel.width + 'px' : '');
+		   + ` ${width} ` + (rightPanel ? rightPanel.width + 'px' : '');
 
 	return (
 		<div className={styles.container}>
