@@ -92,9 +92,10 @@ export const OverlappingPanels = ({ width, height, docked, leftPanel, children, 
 			bEl.style.top = hidden;
 		}
 
+		recalculate();
 		el.addEventListener('scroll', recalculate);
 		return () => el!.removeEventListener('scroll', recalculate);
-	}, [ scrollRef, leftPanel, rightPanel, bottomNav ]);
+	}, [ scrollRef, leftPanel, rightPanel, bottomNav?.showIf ]);
 
 	const gridTemplateColumns = (leftPanel ? leftPanel.width + 'px' : '')
 		   + ` ${width} ` + (rightPanel ? rightPanel.width + 'px' : '');
